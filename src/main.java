@@ -14,7 +14,9 @@ public class main {
 
         DogeClient doge = new DogeClient("10.0.0.115",8080);
 
-
+    if(!doge.m_connected){
+        return;
+    }
 
 
 
@@ -121,6 +123,8 @@ class food implements Serializable {
                 '}';
     }
 }
+
+
 
 /*
 public static void main(String[] args) {

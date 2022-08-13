@@ -2,13 +2,17 @@ package DogeBase;
 
 import java.util.Scanner;
 
+import static DogeBase.OpCode.*;
+
 public class DogeClient {
     private DogeConnection connection;
+    public boolean m_connected = false;
     public DogeClient(String ip, int port){
         connection = new DogeConnection(ip,port);
         if(!connection.isConnected()){
             return;
         }
+        m_connected = true;
     }
 
     public int sendTest(int a){
@@ -23,25 +27,17 @@ public class DogeClient {
         return done.getValue();
     }
     public Object get(int id){
-      connection.write(new DogeInteger(0));
-        connection.read();
+        connection.sendOpCode(DOGE_READ);
         connection.write(new DogeInteger(id));
        return new DogeObject(connection.read()).getValue();
     }
     public void clear(){
-        connection.writeString("clear");
-        connection.read();
+        connection.sendOpCode(DOGE_CLEAR);
     }
 
     public int add(Object obj){
-
-        connection.write(new DogeInteger(1));
-        connection.read();
-        connection.write(new DogeInteger(12));
-        connection.read();
+        connection.sendOpCode(DOGE_APPEND);
         connection.write(new DogeObject(obj));
-
-
         //return id
         return new DogeInteger(connection.read()).getValue();
     }
@@ -53,8 +49,7 @@ public class DogeClient {
 
 
     public void close() {
-        String stop_message = "stop";
-        connection.writeString(stop_message);
+        connection.sendOpCode(DOGE_STOP);
         connection.close();
     }
 }

@@ -81,7 +81,10 @@ public class DogeConnection {
     public void write(DogeType thing){
         this.write(thing.serialize());
     }
-
+    //send an opcode and await confirmation
+    public void sendOpCode(OpCode thing){
+        this.write(new DogeInteger(thing.ordinal())); read();
+    }
 
     public void close() {
         try {

@@ -1,0 +1,4 @@
+package DogeBase;
+public enum OpCode {
+    DOGE_WRITE,DOGE_READ, DOGE_APPEND, DOGE_STOP, DOGE_CLEAR,DOGE_DELETE
+}
