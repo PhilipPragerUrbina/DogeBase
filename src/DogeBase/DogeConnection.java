@@ -36,26 +36,7 @@ public class DogeConnection {
         return m_socket != null;
     }
 
-    //communicate with c++ backend
-    public void writeString(String data){
-        try {
-            //write bytes so c++ can read it as chars
-            m_out.write(data.getBytes());
-        }catch (IOException i) {
-            System.out.println(i);
-        }
-    }
-    public String readString(){
-        try {
-            byte[] bytes = new byte[1024];
-            int number_read = m_in.read(bytes);
 
-            return new String(bytes, 0, number_read);
-        }catch (IOException i) {
-            System.out.println(i);
-        }
-        return "";
-    }
 
     public void write(byte[] data){
         try {
@@ -65,12 +46,20 @@ public class DogeConnection {
             System.out.println(i);
         }
     }
-    public byte[] read(){
+    public byte[] read() throws DogeException{
         try {
             byte[] bytes = new byte[1024];
             int number_read = m_in.read(bytes);
-            byte[] shortened_bytes = new byte[number_read];
-            System.arraycopy(bytes, 0, shortened_bytes, 0, shortened_bytes.length);
+            byte[] shortened_bytes = new byte[number_read-4];
+            System.arraycopy(bytes, 4, shortened_bytes, 0, shortened_bytes.length);
+            byte[] code_bytes = new byte[4];
+            System.arraycopy(bytes, 0, code_bytes, 0, code_bytes.length);
+
+            //check if error message was sent using metadata at the beginning of the message
+            if(new DogeInteger(code_bytes).getValue() == 1){
+                throw new DogeException(new DogeString(shortened_bytes).getValue());
+            }
+
             return shortened_bytes;
         }catch (IOException i) {
             System.out.println(i);
@@ -82,7 +71,7 @@ public class DogeConnection {
         this.write(thing.serialize());
     }
     //send an opcode and await confirmation
-    public void sendOpCode(OpCode thing){
+    public void sendOpCode(OpCode thing) throws DogeException {
         this.write(new DogeInteger(thing.ordinal())); read();
     }
 

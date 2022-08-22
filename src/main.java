@@ -1,5 +1,6 @@
 import DogeBase.DogeClient;
 import DogeBase.DogeConnection;
+import DogeBase.DogeException;
 
 import javax.sound.midi.Soundbank;
 import java.io.Serializable;
@@ -22,66 +23,68 @@ public class main {
 
         System.out.println("Get , end, and new");
         while(true){
+            try {
+                Scanner input = new Scanner(System.in);
+                System.out.println("Enter command");
+                String command = input.nextLine();
+                if (Objects.equals(command, "end")) {
+                    System.out.println("finalized");
+                    break;
+                } else if (Objects.equals(command, "fill")) {
+                    System.out.println("Enter amount");
+                    int n = input.nextInt();
+                    for (int i = 0; i < n; i++) {
+                        System.out.println("Creating new food... ");
+                        String name = randomName();
+                        System.out.println("name: " + name);
+                        double price = Math.random() * 100;
+                        System.out.println("price: " + price);
+                        int yummy = (int) (Math.random() * 10);
+                        System.out.println("yummyness: " + yummy);
+                        food a = new food(yummy, name, price);
+                        System.out.println("ID of new menu item is: " + doge.add(a));
 
-            Scanner input = new Scanner(System.in);
-            System.out.println("Enter command");
-            String command = input.nextLine();
-            if(Objects.equals(command, "end")){
-                System.out.println("Closed connection");
-                break;
-            }else if(Objects.equals(command, "fill")){
-                System.out.println("Enter amount");
-                int n = input.nextInt();
-                for (int i = 0; i < n; i++) {
+                    }
+                } else if (Objects.equals(command, "getall")) {
+                    System.out.println("Enter amount");
+                    int n = input.nextInt();
+                    for (int i = 0; i < n; i++) {
+                        System.out.println(doge.get(i));
+                        System.out.println(i);
+
+                    }
+                } else if (Objects.equals(command, "clear")) {
+                    doge.clear();
+                } else if (Objects.equals(command, "new")) {
+                    System.out.println("Creating new food... ");
+                    System.out.println("enter name of food: ");
+                    String name = input.nextLine();
+                    System.out.println("enter price of food: ");
+                    double price = input.nextDouble();
+                    int yummy = (int) (Math.random() * 10);
+                    food a = new food(yummy, name, price);
+                    System.out.println("Added item to menu");
+                    System.out.println("ID of new is: " + doge.add(a));
+                } else if (Objects.equals(command, "n")) {
                     System.out.println("Creating new food... ");
                     String name = randomName();
                     System.out.println("name: " + name);
                     double price = Math.random() * 100;
                     System.out.println("price: " + price);
-                    int yummy = (int)(Math.random() * 10);
+                    int yummy = (int) (Math.random() * 10);
                     System.out.println("yummyness: " + yummy);
-                    food a = new food(yummy,name,price);
+                    food a = new food(yummy, name, price);
                     System.out.println("ID of new menu item is: " + doge.add(a));
-
+                } else {
+                    System.out.println("get item with id: ");
+                    int id = input.nextInt();
+                    System.out.println(doge.get(id));
                 }
-            }else if(Objects.equals(command, "getall")){
-                System.out.println("Enter amount");
-                int n = input.nextInt();
-                for (int i = 0; i < n; i++) {
-                    System.out.println(doge.get(i));
-                    System.out.println(i);
 
-                }
-            }else if(Objects.equals(command, "clear")){
-                doge.clear();
+            }catch (DogeException error){
+                System.err.println(error);
+                break;
             }
-            else if(Objects.equals(command, "new")){
-                System.out.println("Creating new food... ");
-                System.out.println("enter name of food: ");
-                String name = input.nextLine();
-                System.out.println("enter price of food: ");
-                double price = input.nextDouble();
-                int yummy = (int)(Math.random() * 10);
-                food a = new food(yummy,name,price);
-                System.out.println("Added item to menu");
-                System.out.println("ID of new is: " + doge.add(a));
-            } else if(Objects.equals(command, "n")){
-                System.out.println("Creating new food... ");
-                String name = randomName();
-                System.out.println("name: " + name);
-                double price = Math.random() * 100;
-                System.out.println("price: " + price);
-                int yummy = (int)(Math.random() * 10);
-                System.out.println("yummyness: " + yummy);
-                food a = new food(yummy,name,price);
-                System.out.println("ID of new menu item is: " + doge.add(a));
-            }else{
-                System.out.println("get item with id: ");
-                int id = input.nextInt();
-                System.out.println(doge.get(id));
-            }
-
-
 
         }
 

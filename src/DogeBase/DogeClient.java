@@ -15,41 +15,39 @@ public class DogeClient {
         m_connected = true;
     }
 
-    public int sendTest(int a){
-        DogeInteger to_send = new DogeInteger(a);
-        DogeInteger done = new DogeInteger( request(to_send.serialize()));
-        return done.getValue();
-    }
 
-    public Object sendTest(Object a){
-        DogeObject to_send = new DogeObject(a);
-        DogeObject done = new DogeObject( request(to_send.serialize()));
-        return done.getValue();
-    }
-    public Object get(int id){
+    public Object get(int id) throws DogeException {
         connection.sendOpCode(DOGE_READ);
         connection.write(new DogeInteger(id));
-       return new DogeObject(connection.read()).getValue();
+
+            return new DogeObject(connection.read()).getValue();
+
     }
-    public void clear(){
+    public void clear() throws DogeException {
         connection.sendOpCode(DOGE_CLEAR);
     }
 
-    public int add(Object obj){
+    public int add(Object obj) throws DogeException {
         connection.sendOpCode(DOGE_APPEND);
         connection.write(new DogeObject(obj));
         //return id
         return new DogeInteger(connection.read()).getValue();
     }
 
-    private byte[] request(byte[] data) {
+    private byte[] request(byte[] data) throws DogeException {
         connection.write(data);
         return connection.read();
     }
 
 
-    public void close() {
-        connection.sendOpCode(DOGE_STOP);
-        connection.close();
+    public void close()  {
+        try {
+            connection.sendOpCode(DOGE_STOP);
+
+        }catch (DogeException error){
+            System.err.println(error);
+        }finally {
+            connection.close();
+        }
     }
 }
