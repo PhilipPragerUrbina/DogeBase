@@ -28,7 +28,7 @@ public class main {
                 System.out.println("Enter command");
                 String command = input.nextLine();
                 if (Objects.equals(command, "end")) {
-                    System.out.println("finalized");
+                    System.out.println("ended");
                     break;
                 } else if (Objects.equals(command, "fill")) {
                     System.out.println("Enter amount");

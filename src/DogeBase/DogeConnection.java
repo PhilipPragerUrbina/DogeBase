@@ -50,6 +50,10 @@ public class DogeConnection {
         try {
             byte[] bytes = new byte[1024];
             int number_read = m_in.read(bytes);
+            if(number_read < 0){
+                throw new DogeException("Disconnected from server");
+            }
+
             byte[] shortened_bytes = new byte[number_read-4];
             System.arraycopy(bytes, 4, shortened_bytes, 0, shortened_bytes.length);
             byte[] code_bytes = new byte[4];
